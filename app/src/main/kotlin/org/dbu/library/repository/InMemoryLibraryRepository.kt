@@ -34,4 +34,8 @@ class InMemoryLibraryRepository : LibraryRepository {
     override fun getAllBooks(): List<Book> {
         return books.values.toList()
     }
+
+    override fun getAllPatrons(): List<Patron> {
+        return patrons.values.toList()
+    }
 }

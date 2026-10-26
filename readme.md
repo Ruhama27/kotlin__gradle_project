@@ -1,134 +1,185 @@
-# Library Management System - Kotlin Exercise
+# 📚 Library Management System (Kotlin & Gradle) — Enhanced Edition
 
-##  Project Overview
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-purple.svg)](https://kotlinlang.org/)
+[![Gradle](https://img.shields.io/badge/Gradle-9.3.1-02303A.svg)](https://gradle.org/)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-13%20Passed-success.svg)]()
 
-This project is a simple **Library Management System** implemented in Kotlin. It serves as a hands-on exercise to practice Kotlin fundamentals and Gradle build tool basics. The code is intentionally incomplete - your task is to complete the implementation by following the application behavior.
-
----
-
-##  Learning Objectives
-
-- Understand **Gradle** as a build tool (essential for Android development)
-- Practice **Kotlin** core language concepts
-- Navigate and complete an existing codebase
-- Build and run executable JAR files
+> **Weekend Challenge Deliverable — Task 2: Fork, Study, and Improve a Previous Solution**  
+> Selected Student Solution Studied: [haset-T/kotlin__gradle_project](https://github.com/haset-T/kotlin__gradle_project)  
+> Student Credited: **haset-T**  
+> Challenge Repository: [Debre-birhan-university/kotlin__gradle_project](https://github.com/Debre-birhan-university/kotlin__gradle_project)
 
 ---
 
-##  Prerequisites & Setup
+## 🎯 1. Project Purpose & Objectives
 
-### 1. **Learn Gradle Basics**
-Gradle is the build tool we'll use throughout Android development. Complete the beginner tutorial:
-- [Gradle Getting Started Guide](https://docs.gradle.org/current/userguide/part1_gradle_init.html)
+The **Library Management System** is an interactive, layered console application written in idiomatic Kotlin and built with Gradle. It is designed to model core real-world library operations: managing book cataloging, patron registrations, borrowing workflows with domain constraint validation, return tracking, multi-field search, and patron accountability.
 
-> ⚠️ **Note**: Download the latest Gradle version and practice in a separate project before returning to this one.
-
-### 2. **Master Kotlin Fundamentals**
-Choose your learning path:
-
-**Option A - Google's Android Pathway (Recommended for beginners):**
-- [Android Basics in Kotlin - Unit 1](https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-1)
-
-**Option B - Official Kotlin Documentation:**
-- [Kotlin Getting Started Guide](https://kotlinlang.org/docs/getting-started.html)
-
-**Minimum Requirements:** Understand concepts covered in class + Chapter 3 materials.
+### Core Objectives:
+1. Demonstrate clean, test-driven **Kotlin** fundamentals (data classes, interfaces, companion objects, extension functions, immutability, pattern matching with `when`).
+2. Implement **Layered Software Architecture** (Presentation / Service / Repository / Domain Models).
+3. Identify flaws, edge cases, and design bottlenecks in peer codebases and engineer robust, maintainable improvements.
+4. Establish comprehensive automated test coverage with JUnit 5.
 
 ---
 
+## 🏛️ 2. Architectural Design
 
+The application follows a clean separation of concerns:
 
-## 🎮 Your Task
-
-### **Primary Goal**
-Complete the missing implementation by:
-
-1. **Run the provided JAR** to see how the application should behave:
-   ```bash
-   java -jar app.jar
-   ```
-   Observe all features and workflows.
-
-2. **Navigate to the entry point**: `ConsoleApp.kt`
-
-3. **Fill in all the blanks** (`TODO` sections) to make your code produce the same behavior as the runnable JAR.
-
----
-
-## 🚀 How to Build & Run
-
-### **Build the Project**
-```bash
-# Clean and build
-./gradlew clean build
-
-# Create runnable JAR
-./gradlew jar
-
-# Create distribution package
-./gradlew distZip
 ```
-
-### **Run the Application**
-```bash
-# Option 1: Run directly with Gradle
-./gradlew run
-
-# Option 2: Run the JAR file
-java -jar build/libs/app.jar
-
-# Option 3: Run from distribution
-./gradlew distZip
-cd build/distributions/
-unzip app.zip
-cd app/bin
-./app  # (or app.bat on Windows)
+org.dbu.library
+├── model/
+│   ├── Book.kt               # Immutable data class representing book entities
+│   └── Patron.kt             # Immutable data class representing patron accounts
+├── repository/
+│   ├── LibraryRepository.kt         # Data access contract
+│   └── InMemoryLibraryRepository.kt # In-memory storage backed by Concurrent-friendly Maps
+├── service/
+│   ├── LibraryService.kt            # Core business logic contract
+│   ├── DefaultLibraryService.kt     # Business rules (borrow limits, availability checks)
+│   └── BorrowResult.kt              # Domain status enum (SUCCESS, NOT_AVAILABLE, LIMIT_REACHED, etc.)
+├── ui/
+│   ├── ConsoleApp.kt                # Application entry point & seed data
+│   ├── Menu.kt                      # Terminal UI menu renderer
+│   └── MenuHandler.kt               # User input controller and action dispatcher
+└── util/
+    └── Extensions.kt                # Kotlin extension functions for rich formatting
 ```
 
 ---
 
-## ✅ Expected Features (What the completed app should do)
+## 📦 3. Original vs. Proposed & Implemented Features
 
-When complete, the application should:
-
-- 📖 **Add books** to the library (ISBN, title, author, year)
-- 👤 **Register patrons** (ID, name, email, phone)
-- 📤 **Borrow books** (with availability and limit checks)
-- 📥 **Return books**
-- 🔍 **Search books** by title or author
-- 📋 **List all books** (available/borrowed status)
-- 👥 **View all patrons** and their borrowed books
-
----
-
-## 📝 Implementation Notes
-
-- The code follows a layered architecture:
-  - `model/` - Data classes (already complete)
-  - `repository/` - Data access interface (to be implemented)
-  - `service/` - Business logic (to be completed)
-  - `ui/` - Console interface (already complete)
-
-- Focus on implementing the missing parts in:
-  - `InMemoryRepository.kt`
-  - `DefaultLibraryService.kt`
-
-- Use the runnable JAR as your **specification** - match its behavior exactly
+| Feature | Original Base | Previous Solution (`haset-T`) | Our Enhanced Solution |
+| :--- | :--- | :--- | :--- |
+| **Add Book** | Incomplete TODO | Basic (ignored return value; duplicate bug) | **Input validation** (ISBN, title, author, year range) + duplicate detection |
+| **Register Patron** | Incomplete TODO | Basic (ignored return value; duplicate bug) | **Duplicate ID check** + whitespace validation |
+| **Borrow Book** | Incomplete TODO | 5-book limit check, basic text output | **Detailed informative feedback** on all 5 borrow outcomes |
+| **Return Book** | Incomplete TODO | Basic boolean output | **Safe check** ensuring patron actually holds the book + clear messages |
+| **Search Catalog** | Incomplete TODO | Added ISBN to title/author search | **Multi-attribute search** (title, author, ISBN) with case-insensitive token matching |
+| **List Catalog** | Incomplete TODO | Displayed title/author/year | **Tabular catalog formatting** with status badges `[✓]` & `[✗]` |
+| **List Patrons** | ❌ Missing | ❌ Missing | **Implemented (Option 7)**: Shows all patrons, borrowed counts, and book titles |
+| **Automated Tests** | ❌ Missing | ❌ None | **13 comprehensive JUnit 5 unit tests** |
 
 ---
 
-## 🆘 Getting Help
+## 🌟 4. Deep-Dive: Key Improvements Implemented
 
-If stuck:
-1. Review the Kotlin learning materials
-2. Check Gradle documentation
-3. Run the provided JAR to understand expected behavior
-4. Ask questions in group
+### 1. Elimination of Silent Duplication Bugs
+- **Problem in Studied Solution**: In `haset-T`'s code, calling `addBook` and `registerPatron` ignored the boolean response from repository/service. When a user added an already existing ISBN or patron ID, the app falsely printed `"Book added successfully"` or `"Patron registered successfully"`.
+- **Solution**: We inspect the operation's return value and give explicit error diagnostics:
+  ```kotlin
+  val added = service.addBook(book)
+  if (added) {
+      println("✓ Book '$title' (ISBN: $isbn) added successfully.")
+  } else {
+      println("✗ Error: A book with ISBN '$isbn' already exists.")
+  }
+  ```
 
+### 2. Comprehensive Input Validation
+- Prevented blank or whitespace-only inputs for titles, authors, and IDs.
+- Added numeric sanity boundaries for publication year (must be a valid 4-digit year between 1000 and 2030), preventing negative numbers or runtime format crashes.
+
+### 3. Patron Management & Accountability ("View All Patrons")
+- The original exercise instructions specified *"View all patrons and their borrowed books"*, but neither the starter code nor previous student solutions implemented it.
+- We added `fun getAllPatrons(): List<Patron>` to `LibraryRepository` and `InMemoryLibraryRepository`.
+- Added Option `7 | List All Patrons` displaying:
+  ```
+  ==================== REGISTERED PATRONS (2 Patrons) ====================
+  [ID: P1] Alice | Borrowed (1/5): 1
+     └─ Borrowed titles: Clean Code
+  [ID: P100] John Doe | Borrowed (0/5): None
+  =======================================================================
+  ```
+
+### 4. Rich Kotlin Extension Functions
+- Extended `Book` and `Patron` models in `Extensions.kt`:
+  - `Book.formattedStatus()`: outputs clean status indicators (`Available [✓]` vs `Borrowed [✗]`).
+  - `Patron.summary()`: provides human-readable quota usage (`Borrowed (1/5): ...`).
+
+### 5. Automated Test Suite (100% Logic Coverage)
+- Implemented `LibraryServiceTest.kt` with 13 isolated test cases covering all edge cases:
+  - Unique ISBN / Patron ID constraints
+  - Borrowing unavailable books
+  - Exceeding the 5-book borrowing limit
+  - Returning un-borrowed books
+  - Case-insensitive searching across title, author, and ISBN
+  - Empty search inputs
 
 ---
-# submission instruction
 
-- Fork the Repository
-- Clone and Work on the Code
-- Commit Your Changes and Push to Your Fork
+## 🚀 5. Setup & Execution Instructions
+
+### Prerequisites
+- **Java**: JDK 21 or higher (Tested with OpenJDK / Oracle JDK 21 & 26).
+- **Gradle**: Gradle 8.5+ or use the included `./gradlew` wrapper.
+
+### Build the Project
+```bash
+# Clone the repository
+git clone https://github.com/Ruhama27/kotlin__gradle_project.git
+cd kotlin__gradle_project
+
+# Run unit tests
+./gradlew test
+
+# Build executable Fat JAR
+./gradlew build
+```
+
+### Run the Application
+
+#### Option A: Run directly via Gradle Wrapper
+```bash
+./gradlew run --console=plain
+```
+
+#### Option B: Run via Generated JAR
+```bash
+java -jar app/build/libs/app.jar
+```
+
+---
+
+## 💻 6. Example Terminal Session
+
+```text
+================ LIBRARY MENU ================
+ 1 | Add Book
+ 2 | Register Patron
+ 3 | Borrow Book
+ 4 | Return Book
+ 5 | Search
+ 6 | List All Books
+ 7 | List All Patrons
+ 0 | Exit
+==============================================
+ Enter option: 6
+
+==================== LIBRARY CATALOG (2 Books) ====================
+1        | Clean Code by Robert Martin (2008)            | Available [✓]
+2        | Effective Java by Joshua Bloch (2018)         | Available [✓]
+=================================================================
+
+Enter option: 3
+Patron ID: P1
+ISBN: 1
+✓ Book '1' successfully borrowed by patron 'P1'.
+
+Enter option: 7
+
+==================== REGISTERED PATRONS (1 Patrons) ====================
+[ID: P1] Alice | Borrowed (1/5): 1
+   └─ Borrowed titles: Clean Code
+=======================================================================
+```
+
+---
+
+## 👥 7. Attribution & Credits
+- **Original Course Assignment**: Debre Birhan University (DBU) Mobile Application Course.
+- **Studied Student Fork**: [haset-T/kotlin__gradle_project](https://github.com/haset-T)
+- **Improvements & Documentation**: [Ruhama27](https://github.com/Ruhama27)

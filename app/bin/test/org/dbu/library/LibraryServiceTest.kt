@@ -143,4 +143,26 @@ class LibraryServiceTest {
         val resultsEmpty = service.search("nonexistent")
         assertTrue(resultsEmpty.isEmpty())
     }
+
+    @Test
+    fun testSearchByIsbn() {
+        repository.addBook(Book("978-0132350884", "Clean Code", "Robert Martin", 2008))
+        val results = service.search("978-0132350884")
+        assertEquals(1, results.size)
+        assertEquals("Clean Code", results[0].title)
+    }
+
+    @Test
+    fun testSearchEmptyQueryReturnsEmpty() {
+        repository.addBook(Book("1", "Clean Code", "Robert Martin", 2008))
+        assertTrue(service.search("   ").isEmpty())
+    }
+
+    @Test
+    fun testGetAllPatrons() {
+        repository.addPatron(Patron("P1", "Alice"))
+        repository.addPatron(Patron("P2", "Bob"))
+        val patrons = repository.getAllPatrons()
+        assertEquals(2, patrons.size)
+    }
 }

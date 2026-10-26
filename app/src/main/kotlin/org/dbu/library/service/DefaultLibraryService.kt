@@ -6,6 +6,11 @@ import org.dbu.library.repository.LibraryRepository
 class DefaultLibraryService(
     private val repository: LibraryRepository
 ) : LibraryService {
+
+    companion object {
+        const val MAX_BORROW_LIMIT = 5
+    }
+
     override fun addBook(book: Book): Boolean {
         return repository.addBook(book)
     }
@@ -18,7 +23,7 @@ class DefaultLibraryService(
             return BorrowResult.NOT_AVAILABLE
         }
 
-        if (patron.borrowedBooks.size >= 5) {
+        if (patron.borrowedBooks.size >= MAX_BORROW_LIMIT) {
             return BorrowResult.LIMIT_REACHED
         }
 
@@ -41,9 +46,13 @@ class DefaultLibraryService(
     }
 
     override fun search(query: String): List<Book> {
-        val lower = query.lowercase()
-        return repository.getAllBooks().asSequence().filter {
-            it.title.lowercase().contains(lower) || it.author.lowercase().contains(lower)
+        val lower = query.trim().lowercase()
+        if (lower.isEmpty()) return emptyList()
+
+        return repository.getAllBooks().asSequence().filter { book ->
+            book.title.lowercase().contains(lower) ||
+            book.author.lowercase().contains(lower) ||
+            book.isbn.lowercase().contains(lower)
         }.toList()
     }
 }
